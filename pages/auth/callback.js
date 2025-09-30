@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { supabase } from '../../lib/supabase'
 
 export default function AuthCallback() {
   const router = useRouter()
@@ -8,6 +7,12 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        // Check if we're in the browser
+        if (typeof window === 'undefined') return
+
+        // Import supabase only on client side
+        const { supabase } = await import('../../lib/supabase')
+        
         const { data, error } = await supabase.auth.getSession()
         
         if (error) {

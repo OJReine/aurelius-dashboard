@@ -6,7 +6,7 @@ import {
   ExclamationTriangleIcon,
   LinkIcon,
   KeyIcon,
-  DatabaseIcon,
+  CircleStackIcon,
   CloudIcon
 } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
@@ -373,7 +373,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                 <div className="card p-6">
                   <div className="flex items-start space-x-4">
                     <div className="p-3 bg-green-100 rounded-xl">
-                      <DatabaseIcon className="w-6 h-6 text-green-600" />
+                      <CircleStackIcon className="w-6 h-6 text-green-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
