@@ -62,6 +62,9 @@ const Home: NextPage = () => {
   const [isConfigured, setIsConfigured] = useState(false)
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
     // Load streams from localStorage on component mount
     loadStreams()
     
@@ -105,6 +108,7 @@ const Home: NextPage = () => {
   }, [])
 
   const loadStreams = () => {
+    if (typeof window === 'undefined') return
     try {
       const savedStreams = localStorage.getItem('aurelius-streams')
       if (savedStreams) {
@@ -119,6 +123,7 @@ const Home: NextPage = () => {
   }
 
   const saveStreams = (newStreams: Stream[]) => {
+    if (typeof window === 'undefined') return
     try {
       localStorage.setItem('aurelius-streams', JSON.stringify(newStreams))
       setStreams(newStreams)
