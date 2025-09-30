@@ -114,7 +114,10 @@
   
   .loading-shimmer::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s linear infinite;
   }
   
   /* Soft Modal Styles */
@@ -161,25 +164,25 @@
   }
   
   .bg-aurora {
-    @apply bg-aurora;
+    background: linear-gradient(45deg, #f0f4ff, #faf5ff, #fff8f5);
   }
   
   /* Shadow Effects */
   .shadow-glow {
-    @apply shadow-glow;
+    box-shadow: 0 0 20px rgba(107, 115, 255, 0.15);
   }
   
   .shadow-glow-purple {
-    @apply shadow-glow-purple;
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.15);
   }
   
   /* Animation Utilities */
   .animate-float {
-    @apply animate-float;
+    animation: float 3s ease-in-out infinite;
   }
   
   .animate-pulse-soft {
-    @apply animate-pulse-soft;
+    animation: pulseSoft 2s ease-in-out infinite;
   }
   
   /* Glass Effect */
