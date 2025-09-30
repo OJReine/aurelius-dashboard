@@ -38,9 +38,12 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
     setTestResult(null)
 
     try {
-      // Temporarily save config to test
-      const originalConfig = localStorage.getItem('aurelius-supabase-config')
-      localStorage.setItem('aurelius-supabase-config', JSON.stringify(config))
+      // Temporarily save config to test (only on client side)
+      let originalConfig = null
+      if (typeof window !== 'undefined') {
+        originalConfig = localStorage.getItem('aurelius-supabase-config')
+        localStorage.setItem('aurelius-supabase-config', JSON.stringify(config))
+      }
       
       // Create temporary client to test
       const { createClient } = await import('@supabase/supabase-js')
@@ -49,11 +52,13 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
       // Test connection by trying to get session
       const { data, error } = await testClient.auth.getSession()
       
-      // Restore original config
-      if (originalConfig) {
-        localStorage.setItem('aurelius-supabase-config', originalConfig)
-      } else {
-        localStorage.removeItem('aurelius-supabase-config')
+      // Restore original config (only on client side)
+      if (typeof window !== 'undefined') {
+        if (originalConfig) {
+          localStorage.setItem('aurelius-supabase-config', originalConfig)
+        } else {
+          localStorage.removeItem('aurelius-supabase-config')
+        }
       }
 
       if (error) {

@@ -19,7 +19,7 @@ export default function AccountManager({ isOpen, onClose, onSync }) {
   const [localStreams, setLocalStreams] = useState([])
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && typeof window !== 'undefined') {
       // Get local streams
       const savedStreams = localStorage.getItem('aurelius-streams')
       if (savedStreams) {
@@ -90,7 +90,7 @@ export default function AccountManager({ isOpen, onClose, onSync }) {
 
       // Download streams from database
       const dbStreams = await dbHelpers.getStreams(user.id)
-      if (dbStreams.length > 0) {
+      if (dbStreams.length > 0 && typeof window !== 'undefined') {
         localStorage.setItem('aurelius-streams', JSON.stringify(dbStreams))
         toast.success('Data downloaded successfully!')
       }
@@ -106,7 +106,9 @@ export default function AccountManager({ isOpen, onClose, onSync }) {
 
   const clearLocalData = () => {
     if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
-      localStorage.removeItem('aurelius-streams')
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('aurelius-streams')
+      }
       setLocalStreams([])
       toast.success('Local data cleared')
     }
