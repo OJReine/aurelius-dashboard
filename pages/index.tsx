@@ -148,7 +148,7 @@ const Home: NextPage = () => {
   const completeStream = (streamId: number) => {
     const updatedStreams = streams.map(stream => 
       stream.id === streamId 
-        ? { ...stream, status: 'completed', completed_at: new Date().toISOString() }
+        ? { ...stream, status: 'completed' as const, completed_at: new Date().toISOString() }
         : stream
     )
     saveStreams(updatedStreams)
@@ -169,7 +169,7 @@ const Home: NextPage = () => {
       priority: streamData.priority,
       stream_type: streamData.stream_type,
       notes: streamData.notes,
-      status: 'active',
+      status: 'active' as const,
       created_at: new Date().toISOString()
     }
 
