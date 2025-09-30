@@ -1,0 +1,33 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_APP_NAME": "Aurelius",
+    "NEXT_PUBLIC_APP_DESCRIPTION": "Your Personal IMVU Modeling Assistant",
+    "NEXT_PUBLIC_DISCORD_CLIENT_ID": "1422317226710798336",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://zoqsdcskzcmnmaylnwha.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvcXNkY3NremNtbm1heWxud2hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNjE2MTgsImV4cCI6MjA3NDczNzYxOH0.EIk00c3kbYeT7ITaayt2_G5mkVNa2QgB991WBjlw6Xo"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
