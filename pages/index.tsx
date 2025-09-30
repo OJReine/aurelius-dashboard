@@ -26,11 +26,15 @@ interface Stream {
   id: number
   item_name: string
   creator_name: string
-  agency_name: string
+  creator_id?: string
+  agency_name?: string
   due_date: string
   status: 'active' | 'completed' | 'overdue'
   priority: 'low' | 'medium' | 'high'
+  stream_type?: 'showcase' | 'sponsored' | 'open'
+  notes?: string
   created_at: string
+  completed_at?: string
 }
 
 interface DashboardStats {
