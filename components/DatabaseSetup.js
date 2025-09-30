@@ -103,12 +103,12 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="modal-content max-w-4xl"
+        className="bg-white/90 backdrop-blur-md rounded-2xl shadow-soft-lg border border-white/30 p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
@@ -116,7 +116,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
             <h2 className="text-2xl font-bold text-gradient">
               Set Up Your Database
             </h2>
-            <p className="text-soft mt-1">
+            <p className="text-gray-600 mt-1">
               Keep your data safe and accessible across devices
             </p>
           </div>
@@ -148,11 +148,11 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                 </div>
                 <div className="ml-3">
                   <p className={`text-sm font-medium ${
-                    step >= index + 1 ? 'text-gray-900' : 'text-soft-400'
+                    step >= index + 1 ? 'text-gray-900' : 'text-gray-500'
                   }`}>
                     {stepItem.title}
                   </p>
-                  <p className="text-xs text-soft-400">
+                  <p className="text-xs text-gray-500">
                     {stepItem.description}
                   </p>
                 </div>
@@ -183,21 +183,21 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       Create a Free Supabase Account
                     </h3>
-                    <p className="text-soft mb-4">
+                    <p className="text-gray-600 mb-4">
                       Supabase offers a free tier with 500MB database storage, perfect for your modeling data.
                     </p>
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                        <span className="text-sm">Free 500MB database storage</span>
+                        <span className="text-sm text-gray-700">Free 500MB database storage</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                        <span className="text-sm">Automatic backups</span>
+                        <span className="text-sm text-gray-700">Automatic backups</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                        <span className="text-sm">Access from any device</span>
+                        <span className="text-sm text-gray-700">Access from any device</span>
                       </div>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       Get Your Database Connection Details
                     </h3>
-                    <p className="text-soft mb-4">
+                    <p className="text-gray-600 mb-4">
                       You need two pieces of information from your Supabase project.
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                   <div>
                     <label className="label-soft">Project URL</label>
                     <div className="relative">
-                      <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-soft-400" />
+                      <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="url"
                         value={config.url}
@@ -263,7 +263,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                         placeholder="https://your-project.supabase.co"
                       />
                     </div>
-                    <p className="text-xs text-soft-400 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       Found in Settings → API → Project URL
                     </p>
                   </div>
@@ -271,7 +271,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                   <div>
                     <label className="label-soft">Anon Public Key</label>
                     <div className="relative">
-                      <KeyIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-soft-400" />
+                      <KeyIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="text"
                         value={config.anonKey}
@@ -280,7 +280,7 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                         placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                       />
                     </div>
-                    <p className="text-xs text-soft-400 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       Found in Settings → API → Project API keys
                     </p>
                   </div>
@@ -384,21 +384,21 @@ export default function DatabaseSetup({ isOpen, onClose, onSuccess }) {
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         Ready to Save Your Data!
                       </h3>
-                      <p className="text-soft mb-4">
+                      <p className="text-gray-600 mb-4">
                         Your database connection is working. Click "Save Configuration" to start syncing your data.
                       </p>
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
                           <CheckCircleIcon className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Your streams will be backed up automatically</span>
+                          <span className="text-sm text-gray-700">Your streams will be backed up automatically</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <CheckCircleIcon className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Access your data from any device</span>
+                          <span className="text-sm text-gray-700">Access your data from any device</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <CheckCircleIcon className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Never lose your progress again</span>
+                          <span className="text-sm text-gray-700">Never lose your progress again</span>
                         </div>
                       </div>
                     </div>
