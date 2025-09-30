@@ -164,16 +164,28 @@
   }
   
   .bg-aurora {
-    background: linear-gradient(45deg, #f0f4ff, #faf5ff, #fff8f5);
+    background: linear-gradient(45deg, #faf8f6, #f4f0eb, #fefcf9);
+  }
+
+  .bg-star-pattern {
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(184, 160, 130, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(166, 127, 82, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 60%, rgba(228, 188, 138, 0.06) 0%, transparent 50%),
+      linear-gradient(45deg, #faf8f6, #f4f0eb, #fefcf9);
   }
   
   /* Shadow Effects */
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(107, 115, 255, 0.15);
+    box-shadow: 0 0 20px rgba(184, 160, 130, 0.15);
   }
   
-  .shadow-glow-purple {
-    box-shadow: 0 0 20px rgba(155, 89, 182, 0.15);
+  .shadow-glow-mocha {
+    box-shadow: 0 0 20px rgba(166, 127, 82, 0.15);
+  }
+
+  .shadow-glow-accent {
+    box-shadow: 0 0 20px rgba(228, 188, 138, 0.15);
   }
   
   /* Animation Utilities */

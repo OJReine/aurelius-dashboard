@@ -297,7 +297,7 @@ const Home: NextPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-aurora relative">
+    <div className="min-h-screen bg-star-pattern relative">
       <Head>
         <title>Aurelius Dashboard - IMVU Modeling Assistant</title>
         <meta name="description" content="Manage your IMVU modeling streams with Aurelius" />
@@ -306,10 +306,16 @@ const Home: NextPage = () => {
 
       {/* Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary-200/5 rounded-full blur-2xl animate-float"></div>
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-secondary-200/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-accent-200/3 rounded-full blur-2xl animate-pulse-soft"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-24 h-24 bg-primary-100/4 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-mocha-200/5 rounded-full blur-2xl animate-float"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-accent-200/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-primary-200/3 rounded-full blur-2xl animate-pulse-soft"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-24 h-24 bg-mocha-100/4 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
+        {/* Abstract star patterns */}
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-mocha-400/20 rounded-full animate-pulse-soft"></div>
+        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-accent-400/30 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-primary-400/25 rounded-full animate-pulse-soft" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute top-1/6 right-1/6 w-1 h-1 bg-mocha-500/20 rounded-full animate-float" style={{ animationDelay: '2.5s' }}></div>
+        <div className="absolute bottom-1/3 left-1/6 w-2 h-2 bg-accent-300/15 rounded-full animate-pulse-soft" style={{ animationDelay: '3s' }}></div>
       </div>
 
       {/* Header */}
@@ -680,47 +686,295 @@ const Home: NextPage = () => {
           </motion.div>
         )}
 
-        {/* Placeholder tabs */}
-        {['schedule', 'reviews', 'profile', 'settings'].includes(activeTab) && (
+        {activeTab === 'schedule' && (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="card p-8 text-center max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
           >
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl mb-4 animate-float text-primary-400"
-            >
-              ✦
-            </motion.div>
-            <motion.h2 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-xl font-semibold text-gradient mb-3"
-            >
-              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Coming Soon
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-soft mb-6"
-            >
-              This feature is currently under development. Check back soon!
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="mt-6"
-            >
-              <p className="text-sm text-soft-lg italic">
-                ❧ "Patience is the companion of wisdom." ❧
-              </p>
-            </motion.div>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gradient">Weekly Schedule</h2>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowStreamForm(true)}
+                className="btn-primary"
+              >
+                <PlusIcon className="w-4 h-4 mr-2" />
+                Add to Schedule
+              </motion.button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
+                <motion.div
+                  key={day}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="card p-4"
+                >
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3 text-center">{day}</h3>
+                  <div className="space-y-2">
+                    {streams
+                      .filter(stream => {
+                        const streamDate = new Date(stream.due_date)
+                        const dayOfWeek = streamDate.getDay()
+                        const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Convert Sunday=0 to Sunday=6
+                        return adjustedDay === index
+                      })
+                      .map(stream => (
+                        <div key={stream.id} className="p-2 bg-soft-50 rounded-lg">
+                          <p className="text-xs font-medium text-gray-900 truncate">{stream.item_name}</p>
+                          <p className="text-xs text-soft">{stream.creator_name}</p>
+                        </div>
+                      ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'reviews' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gradient">Item Reviews</h2>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn-primary"
+              >
+                <PlusIcon className="w-4 h-4 mr-2" />
+                New Review
+              </motion.button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {streams
+                .filter(stream => stream.status === 'completed')
+                .map((stream, index) => (
+                  <motion.div
+                    key={stream.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="card p-6"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">{stream.item_name}</h3>
+                      <div className="flex space-x-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <StarIcon key={star} className="w-4 h-4 text-accent-400 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-soft mb-2">by {stream.creator_name}</p>
+                    <p className="text-sm text-gray-700 mb-4">
+                      "This item exceeded my expectations! The quality is outstanding and the design is perfect for my style."
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-soft">Completed {formatDate(stream.completed_at || stream.due_date)}</span>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="btn-ghost text-xs"
+                      >
+                        Edit Review
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+            </div>
+
+            {streams.filter(stream => stream.status === 'completed').length === 0 && (
+              <div className="card p-8 text-center">
+                <div className="text-4xl mb-4 text-accent-400">✦</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h3>
+                <p className="text-soft mb-4">Complete some streams to start writing reviews!</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveTab('streams')}
+                  className="btn-primary"
+                >
+                  View Streams
+                </motion.button>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {activeTab === 'profile' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gradient">Profile Settings</h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="card p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="label-soft">IMVU Name</label>
+                    <input type="text" className="input-field" placeholder="Your IMVU username" />
+                  </div>
+                  <div>
+                    <label className="label-soft">Instagram Handle</label>
+                    <input type="text" className="input-field" placeholder="@your_instagram" />
+                  </div>
+                  <div>
+                    <label className="label-soft">Preferred Agencies</label>
+                    <input type="text" className="input-field" placeholder="Agency names (comma separated)" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="card p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Preferences</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="label-soft">Caption Style</label>
+                    <select className="input-field">
+                      <option value="elegant">Elegant</option>
+                      <option value="casual">Casual</option>
+                      <option value="professional">Professional</option>
+                      <option value="creative">Creative</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label-soft">Timezone</label>
+                    <select className="input-field">
+                      <option value="UTC">UTC</option>
+                      <option value="EST">Eastern Time</option>
+                      <option value="PST">Pacific Time</option>
+                      <option value="GMT">Greenwich Mean Time</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label-soft">Default Stream Type</label>
+                    <select className="input-field">
+                      <option value="showcase">Showcase</option>
+                      <option value="sponsored">Sponsored</option>
+                      <option value="open">Open</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary-600">{stats.activeStreams}</div>
+                  <div className="text-sm text-soft">Active Streams</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-success-600">{stats.completedStreams}</div>
+                  <div className="text-sm text-soft">Completed</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-error-600">{stats.overdueStreams}</div>
+                  <div className="text-sm text-soft">Overdue</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-secondary-600">{stats.thisWeekStreams}</div>
+                  <div className="text-sm text-soft">This Week</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'settings' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gradient">Settings</h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="card p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Notifications</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-900">Stream Reminders</div>
+                      <div className="text-sm text-soft">Get notified about upcoming streams</div>
+                    </div>
+                    <input type="checkbox" className="rounded" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-900">Overdue Alerts</div>
+                      <div className="text-sm text-soft">Alert when streams are overdue</div>
+                    </div>
+                    <input type="checkbox" className="rounded" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-900">Weekly Summary</div>
+                      <div className="text-sm text-soft">Receive weekly progress reports</div>
+                    </div>
+                    <input type="checkbox" className="rounded" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="card p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Management</h3>
+                <div className="space-y-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowDatabaseSetup(true)}
+                    className="btn-secondary w-full"
+                  >
+                    <CloudIcon className="w-4 h-4 mr-2" />
+                    Configure Database
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowAccountManager(true)}
+                    className="btn-secondary w-full"
+                  >
+                    <UserIcon className="w-4 h-4 mr-2" />
+                    Account Settings
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="btn-secondary w-full text-red-600 hover:text-red-800"
+                  >
+                    <TrashIcon className="w-4 h-4 mr-2" />
+                    Clear All Data
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">About Aurelius</h3>
+              <div className="space-y-2 text-soft">
+                <p>Version: 1.0.0</p>
+                <p>Built with Next.js, React, and Tailwind CSS</p>
+                <p>Database: {isConfigured ? 'Supabase (Cloud)' : 'Local Storage'}</p>
+                <p>AI Features: {process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'Enabled' : 'Disabled'}</p>
+              </div>
+            </div>
           </motion.div>
         )}
       </main>
