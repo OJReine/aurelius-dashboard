@@ -35,14 +35,21 @@ export default function CaptionGenerator({ isOpen, onClose, streamData, agencies
 
     setLoading(true)
     try {
-      const captions = {}
-      
-      for (const item of streamData.items) {
-        const caption = await generateCaptionForItem(item)
-        captions[item.id] = caption
+      // For IMVU and IG feeds, generate a single caption for all items
+      if (selectedPlatform === 'imvu_feed' || selectedPlatform === 'ig_feed') {
+        const singleCaption = await generateSingleCaptionForAllItems()
+        setGeneratedCaptions({ all_items: singleCaption })
+      } else {
+        // For other platforms, generate individual captions
+        const captions = {}
+        
+        for (const item of streamData.items) {
+          const caption = await generateCaptionForItem(item)
+          captions[item.id] = caption
+        }
+        
+        setGeneratedCaptions(captions)
       }
-      
-      setGeneratedCaptions(captions)
     } catch (error) {
       console.error('Error generating captions:', error)
       toast.error('Failed to generate captions')
@@ -68,6 +75,9 @@ export default function CaptionGenerator({ isOpen, onClose, streamData, agencies
     const variables = {
       item_name: item.item_name || 'Item',
       creator_name: item.creator_name || 'Creator',
+      creator_imvu_avatar: item.creator_imvu_avatar || 'Creator',
+      creator_ig_handle: item.creator_ig_handle || '',
+      creator_ig_shop_handle: item.creator_ig_shop_handle || '',
       product_id: item.product_id || '',
       agency_name: streamData.agency_name || 'Agency',
       stream_type: streamData.stream_type || 'showcase',
@@ -82,12 +92,71 @@ export default function CaptionGenerator({ isOpen, onClose, streamData, agencies
     return caption
   }
 
+  const generateSingleCaptionForAllItems = async () => {
+    if (!streamData || !streamData.items) return ''
+
+    // Get template from selected agency or use default
+    let template = ''
+    
+    if (selectedAgency) {
+      const agency = agencies.find(a => a.id === parseInt(selectedAgency))
+      template = agency?.templates?.[selectedPlatform] || ''
+    }
+    
+    if (!template) {
+      template = getDefaultTemplate(selectedPlatform)
+    }
+
+    // For IMVU and IG feeds, create a single caption with all items
+    if (selectedPlatform === 'imvu_feed' || selectedPlatform === 'ig_feed') {
+      let caption = template
+      
+      // Replace basic variables
+      const basicVariables = {
+        agency_name: streamData.agency_name || 'Agency',
+        stream_type: streamData.stream_type || 'showcase',
+        due_date: streamData.due_date ? new Date(streamData.due_date).toLocaleDateString() : ''
+      }
+
+      Object.entries(basicVariables).forEach(([key, value]) => {
+        caption = caption.replace(new RegExp(`{${key}}`, 'g'), value)
+      })
+
+      // Handle multiple items
+      if (caption.includes('{item_name}') || caption.includes('{creator_name}') || caption.includes('{product_id}')) {
+        // Create a list of all items
+        const itemsList = streamData.items.map(item => {
+          let itemText = caption
+          
+          const itemVariables = {
+            item_name: item.item_name || 'Item',
+            creator_name: item.creator_name || 'Creator',
+            creator_imvu_avatar: item.creator_imvu_avatar || 'Creator',
+            creator_ig_handle: item.creator_ig_handle || '',
+            creator_ig_shop_handle: item.creator_ig_shop_handle || '',
+            product_id: item.product_id || ''
+          }
+
+          Object.entries(itemVariables).forEach(([key, value]) => {
+            itemText = itemText.replace(new RegExp(`{${key}}`, 'g'), value)
+          })
+
+          return itemText
+        }).join('\n\n')
+
+        return itemsList
+      }
+    }
+
+    return caption
+  }
+
   const getDefaultTemplate = (platform) => {
     const templates = {
-      imvu_feed: '✨ {item_name} by {creator_name} ✨\n\n{product_id}\n\n#IMVU #Fashion #Modeling',
+      imvu_feed: '✨ {item_name} by @{creator_imvu_avatar} ✨\n\n{product_id}\n\n#IMVU #Fashion #Modeling',
       ig_feed: '✨ {item_name} ✨\n\nAvailable on IMVU!\nProduct ID: {product_id}\n\n#IMVU #Fashion #Modeling #VirtualFashion',
-      request: 'Hi {creator_name}! I\'d love to showcase {item_name} in my next stream. Product ID: {product_id}',
-      end_stream: 'Thank you for watching! Don\'t forget to check out {item_name} by {creator_name} - {product_id}'
+      request: 'Hi @{creator_imvu_avatar}! I\'d love to showcase {item_name} in my next stream. Product ID: {product_id}',
+      end_stream: 'Thank you for watching! Don\'t forget to check out {item_name} by @{creator_imvu_avatar} - {product_id}'
     }
     return templates[platform] || ''
   }
@@ -195,7 +264,40 @@ export default function CaptionGenerator({ isOpen, onClose, streamData, agencies
             )}
           </div>
 
-          {streamData.items?.map((item, index) => (
+          {/* Single caption for IMVU/IG feeds */}
+          {(selectedPlatform === 'imvu_feed' || selectedPlatform === 'ig_feed') && generatedCaptions.all_items && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="card p-4"
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h4 className="font-medium text-gray-900">
+                    {selectedPlatform === 'imvu_feed' ? 'IMVU Feed Caption' : 'Instagram Feed Caption'}
+                  </h4>
+                  <p className="text-sm text-gray-500">
+                    All {streamData.items?.length || 0} items included
+                  </p>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(generatedCaptions.all_items || '')}
+                  className="btn-ghost text-sm"
+                >
+                  <ClipboardDocumentIcon className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-3">
+                <pre className="text-sm text-gray-800 whitespace-pre-wrap">
+                  {generatedCaptions.all_items || 'Generating caption...'}
+                </pre>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Individual captions for other platforms */}
+          {selectedPlatform !== 'imvu_feed' && selectedPlatform !== 'ig_feed' && streamData.items?.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 20 }}

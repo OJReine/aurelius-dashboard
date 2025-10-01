@@ -24,6 +24,9 @@ export default function StreamForm({ isOpen, onClose, onSubmit, initialData = nu
       id: 1,
       item_name: '',
       creator_name: '',
+      creator_imvu_avatar: '',
+      creator_ig_handle: '',
+      creator_ig_shop_handle: '',
       creator_id: '',
       product_url: '',
       product_id: '',
@@ -46,6 +49,9 @@ export default function StreamForm({ isOpen, onClose, onSubmit, initialData = nu
       id: Date.now(),
       item_name: '',
       creator_name: '',
+      creator_imvu_avatar: '',
+      creator_ig_handle: '',
+      creator_ig_shop_handle: '',
       creator_id: '',
       product_url: '',
       product_id: '',
@@ -304,14 +310,48 @@ export default function StreamForm({ isOpen, onClose, onSubmit, initialData = nu
                     </div>
 
                     <div>
-                      <label className="label-soft">Creator Name *</label>
+                      <label className="label-soft">Creator Display Name *</label>
                       <input
                         type="text"
                         value={item.creator_name}
                         onChange={(e) => updateItem(item.id, 'creator_name', e.target.value)}
                         className="input-field"
-                        placeholder="Enter creator name"
+                        placeholder="Enter creator display name"
                         required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label-soft">Creator IMVU Avatar Name *</label>
+                      <input
+                        type="text"
+                        value={item.creator_imvu_avatar}
+                        onChange={(e) => updateItem(item.id, 'creator_imvu_avatar', e.target.value)}
+                        className="input-field"
+                        placeholder="Enter IMVU avatar name (for @mentions)"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label-soft">Creator IG Handle</label>
+                      <input
+                        type="text"
+                        value={item.creator_ig_handle}
+                        onChange={(e) => updateItem(item.id, 'creator_ig_handle', e.target.value)}
+                        className="input-field"
+                        placeholder="@creator_ig_handle"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label-soft">Creator IG Shop Handle</label>
+                      <input
+                        type="text"
+                        value={item.creator_ig_shop_handle}
+                        onChange={(e) => updateItem(item.id, 'creator_ig_shop_handle', e.target.value)}
+                        className="input-field"
+                        placeholder="@creator_shop_handle"
                       />
                     </div>
 

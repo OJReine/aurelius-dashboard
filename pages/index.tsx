@@ -42,6 +42,9 @@ interface StreamItem {
   id: number
   item_name: string
   creator_name: string
+  creator_imvu_avatar: string // Mandatory IMVU avatar name
+  creator_ig_handle?: string // Optional IG handle
+  creator_ig_shop_handle?: string // Optional IG shop handle
   creator_id?: string
   product_url?: string
   product_id?: string

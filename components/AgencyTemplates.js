@@ -21,7 +21,10 @@ const TEMPLATE_TYPES = [
 
 const AVAILABLE_VARIABLES = [
   { name: 'item_name', description: 'Name of the item' },
-  { name: 'creator_name', description: 'Name of the creator' },
+  { name: 'creator_name', description: 'Creator display name' },
+  { name: 'creator_imvu_avatar', description: 'Creator IMVU avatar name (for @mentions)' },
+  { name: 'creator_ig_handle', description: 'Creator Instagram handle' },
+  { name: 'creator_ig_shop_handle', description: 'Creator Instagram shop handle' },
   { name: 'product_id', description: 'IMVU product ID' },
   { name: 'agency_name', description: 'Agency name' },
   { name: 'stream_type', description: 'Type of stream (showcase, sponsored, etc.)' },
