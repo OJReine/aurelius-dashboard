@@ -21,13 +21,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import StreamForm from '../components/StreamForm'
 import DatabaseSetup from '../components/DatabaseSetup'
 import AccountManager from '../components/AccountManager'
+import AgencyTemplates from '../components/AgencyTemplates'
+import CaptionGenerator from '../components/CaptionGenerator'
 import { supabase, dbHelpers } from '../lib/supabase'
 
 interface Stream {
   id: number
-  item_name: string
-  creator_name: string
-  creator_id?: string
   agency_name?: string
   due_date: string
   status: 'active' | 'completed' | 'overdue'
@@ -36,6 +35,17 @@ interface Stream {
   notes?: string
   created_at: string
   completed_at?: string
+  items: StreamItem[]
+}
+
+interface StreamItem {
+  id: number
+  item_name: string
+  creator_name: string
+  creator_id?: string
+  product_url?: string
+  product_id?: string
+  notes?: string
 }
 
 interface DashboardStats {
@@ -59,18 +69,25 @@ const Home: NextPage = () => {
   const [editingStream, setEditingStream] = useState<Stream | null>(null)
   const [showDatabaseSetup, setShowDatabaseSetup] = useState(false)
   const [showAccountManager, setShowAccountManager] = useState(false)
+  const [showAgencyTemplates, setShowAgencyTemplates] = useState(false)
+  const [showCaptionGenerator, setShowCaptionGenerator] = useState(false)
+  const [selectedStreamForCaptions, setSelectedStreamForCaptions] = useState<Stream | null>(null)
   const [user, setUser] = useState<any>(null)
   const [isConfigured, setIsConfigured] = useState(false)
+  const [agencies, setAgencies] = useState([])
 
   useEffect(() => {
     // Only run on client side
     if (typeof window === 'undefined') return
 
-    // Load streams from localStorage on component mount
-    loadStreams()
-    
-    // Check if database is configured
-    setIsConfigured(dbHelpers.isConfigured())
+        // Load streams from localStorage on component mount
+        loadStreams()
+        
+        // Load agencies from localStorage
+        loadAgencies()
+        
+        // Check if database is configured
+        setIsConfigured(dbHelpers.isConfigured())
     
     // Check for auth success/error messages
     const urlParams = new URLSearchParams(window.location.search)
@@ -123,6 +140,18 @@ const Home: NextPage = () => {
     }
   }
 
+  const loadAgencies = () => {
+    if (typeof window === 'undefined') return
+    try {
+      const savedAgencies = localStorage.getItem('aurelius-agencies')
+      if (savedAgencies) {
+        setAgencies(JSON.parse(savedAgencies))
+      }
+    } catch (error) {
+      console.error('Error loading agencies:', error)
+    }
+  }
+
   const saveStreams = (newStreams: Stream[]) => {
     if (typeof window === 'undefined') return
     try {
@@ -171,16 +200,14 @@ const Home: NextPage = () => {
 
     const newStream: Stream = {
       id: Date.now(), // Simple ID generation
-      item_name: streamData.item_name,
-      creator_name: streamData.creator_name,
-      creator_id: streamData.creator_id,
       agency_name: streamData.agency_name,
       due_date: dueDate.toISOString(),
       priority: streamData.priority,
       stream_type: streamData.stream_type,
       notes: streamData.notes,
       status: 'active' as const,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      items: streamData.items || []
     }
 
     // Save to local storage
@@ -260,6 +287,16 @@ const Home: NextPage = () => {
 
   const handleSync = () => {
     loadStreams()
+  }
+
+  const handleCaptionGeneration = (stream: Stream) => {
+    setSelectedStreamForCaptions(stream)
+    setShowCaptionGenerator(true)
+  }
+
+  const handleAgencyTemplatesSave = (savedAgencies: any[]) => {
+    setAgencies(savedAgencies)
+    toast.success('Agency templates saved! ✨')
   }
 
   const getPriorityColor = (priority: string) => {
@@ -483,6 +520,15 @@ const Home: NextPage = () => {
                   <UserIcon className="w-5 h-5 mr-2" />
                   Manage Account
                 </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowAgencyTemplates(true)}
+                  className="btn-secondary flex items-center justify-center p-4"
+                >
+                  <DocumentTextIcon className="w-5 h-5 mr-2" />
+                  Agency Templates
+                </motion.button>
               </div>
             </motion.div>
 
@@ -573,6 +619,14 @@ const Home: NextPage = () => {
                             className="btn-secondary text-xs px-2 py-1"
                           >
                             <PencilIcon className="w-3 h-3" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleCaptionGeneration(stream)}
+                            className="btn-secondary text-xs px-2 py-1"
+                          >
+                            <DocumentTextIcon className="w-3 h-3" />
                           </motion.button>
                         </div>
                       </div>
@@ -1000,6 +1054,24 @@ const Home: NextPage = () => {
         isOpen={showAccountManager}
         onClose={() => setShowAccountManager(false)}
         onSync={handleSync}
+      />
+
+      {/* Agency Templates Modal */}
+      <AgencyTemplates
+        isOpen={showAgencyTemplates}
+        onClose={() => setShowAgencyTemplates(false)}
+        onSave={handleAgencyTemplatesSave}
+      />
+
+      {/* Caption Generator Modal */}
+      <CaptionGenerator
+        isOpen={showCaptionGenerator}
+        onClose={() => {
+          setShowCaptionGenerator(false)
+          setSelectedStreamForCaptions(null)
+        }}
+        streamData={selectedStreamForCaptions}
+        agencies={agencies}
       />
 
       <Toaster />
