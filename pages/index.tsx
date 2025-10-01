@@ -28,6 +28,7 @@ import { supabase, dbHelpers } from '../lib/supabase'
 interface Stream {
   id: number
   agency_name?: string
+  model_ig_handle?: string
   due_date: string
   status: 'active' | 'completed' | 'overdue'
   priority: 'low' | 'medium' | 'high'
@@ -204,6 +205,7 @@ const Home: NextPage = () => {
     const newStream: Stream = {
       id: Date.now(), // Simple ID generation
       agency_name: streamData.agency_name,
+      model_ig_handle: streamData.model_ig_handle,
       due_date: dueDate.toISOString(),
       priority: streamData.priority,
       stream_type: streamData.stream_type,

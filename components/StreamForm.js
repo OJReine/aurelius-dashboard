@@ -13,6 +13,7 @@ import IMVULinkParser from '../lib/imvuLinkParser'
 export default function StreamForm({ isOpen, onClose, onSubmit, initialData = null }) {
   const [formData, setFormData] = useState({
     agency_name: initialData?.agency_name || '',
+    model_ig_handle: initialData?.model_ig_handle || '',
     due_days: initialData ? Math.ceil((new Date(initialData.due_date) - new Date()) / (1000 * 60 * 60 * 24)) : 3,
     priority: initialData?.priority || 'medium',
     stream_type: initialData?.stream_type || 'showcase',
@@ -175,7 +176,7 @@ export default function StreamForm({ isOpen, onClose, onSubmit, initialData = nu
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Stream Details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="label-soft">Agency Name</label>
               <input
@@ -187,6 +188,21 @@ export default function StreamForm({ isOpen, onClose, onSubmit, initialData = nu
                 placeholder="Enter agency name"
               />
             </div>
+
+            <div>
+              <label className="label-soft">Model IG Handle</label>
+              <input
+                type="text"
+                name="model_ig_handle"
+                value={formData.model_ig_handle}
+                onChange={handleChange}
+                className="input-field"
+                placeholder="@model_ig_handle"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
             <div>
               <label className="label-soft">Due Days *</label>

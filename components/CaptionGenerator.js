@@ -111,50 +111,49 @@ export default function CaptionGenerator({ isOpen, onClose, streamData, agencies
     if (selectedPlatform === 'imvu_feed' || selectedPlatform === 'ig_feed') {
       let caption = template
       
+      // Get the first item for single-item variables
+      const firstItem = streamData.items[0]
+      
       // Replace basic variables
       const basicVariables = {
         agency_name: streamData.agency_name || 'Agency',
         stream_type: streamData.stream_type || 'showcase',
-        due_date: streamData.due_date ? new Date(streamData.due_date).toLocaleDateString() : ''
+        due_date: streamData.due_date ? new Date(streamData.due_date).toLocaleDateString() : '',
+        creator_imvu_avatar: firstItem?.creator_imvu_avatar || 'Creator',
+        creator_ig_handle: firstItem?.creator_ig_handle || '',
+        creator_shop_id: firstItem?.creator_id || '',
+        agency_ig_handle: streamData.agency_name ? `@${streamData.agency_name.toLowerCase().replace(/\s+/g, '_')}_agency` : '@agency',
+        agency_hashtag: streamData.agency_name ? streamData.agency_name.toUpperCase().replace(/\s+/g, '_') + '_MODELING_AGENCY' : 'AGENCY',
+        model_ig_handle: streamData.model_ig_handle || '@model_handle'
+      }
+
+      // Handle multiple items for IMVU feed
+      if (selectedPlatform === 'imvu_feed') {
+        const itemNames = streamData.items.map(item => item.item_name).join(', ')
+        const productIds = streamData.items.map(item => item.product_id).join(', ')
+        
+        basicVariables.item_names = itemNames
+        basicVariables.product_ids = productIds
+      } else {
+        // For IG feed, use first item for single item format
+        basicVariables.item_name = firstItem?.item_name || 'Item'
+        basicVariables.product_id = firstItem?.product_id || ''
       }
 
       Object.entries(basicVariables).forEach(([key, value]) => {
         caption = caption.replace(new RegExp(`{${key}}`, 'g'), value)
       })
 
-      // Handle multiple items
-      if (caption.includes('{item_name}') || caption.includes('{creator_name}') || caption.includes('{product_id}')) {
-        // Create a list of all items
-        const itemsList = streamData.items.map(item => {
-          let itemText = caption
-          
-          const itemVariables = {
-            item_name: item.item_name || 'Item',
-            creator_name: item.creator_name || 'Creator',
-            creator_imvu_avatar: item.creator_imvu_avatar || 'Creator',
-            creator_ig_handle: item.creator_ig_handle || '',
-            creator_ig_shop_handle: item.creator_ig_shop_handle || '',
-            product_id: item.product_id || ''
-          }
-
-          Object.entries(itemVariables).forEach(([key, value]) => {
-            itemText = itemText.replace(new RegExp(`{${key}}`, 'g'), value)
-          })
-
-          return itemText
-        }).join('\n\n')
-
-        return itemsList
-      }
+      return caption
     }
 
-    return caption
+    return template
   }
 
   const getDefaultTemplate = (platform) => {
     const templates = {
-      imvu_feed: '✨ {item_name} by @{creator_imvu_avatar} ✨\n\n{product_id}\n\n#IMVU #Fashion #Modeling',
-      ig_feed: '✨ {item_name} ✨\n\nAvailable on IMVU!\nProduct ID: {product_id}\n\n#IMVU #Fashion #Modeling #VirtualFashion',
+      imvu_feed: '⚜️{agency_name}⚜️ present Shop Stream @{creator_imvu_avatar}\n\n❤️ Product name(s): {item_names}\n❤️ Product ID(s): {product_ids}\n❤️ Shop ID: {creator_shop_id}',
+      ig_feed: '{agency_name} present Shop Stream Creator {creator_imvu_avatar} | @{creator_ig_handle}\n\n#shop{creator_imvu_avatar}\n\n❤️ Product name: {item_name}\n❤️ Product ID: {product_id}\n❤️ Shop ID: {creator_shop_id}\n❤️ @{agency_ig_handle}\n❤️ Model: @{model_ig_handle}\n\n#imvu #creator #{agency_hashtag} #imvumodelagency #imvustreamer #imvustreaming #imvumodel #imvumodels #imvucollaboration #imvufashion #imvulifestyle #imvupictureperfect #imvuphoto #imvuinstagram #imvushop #imvuoutfits #imvustyle #imvustudiobeta #imvubeauty #imvudiscover #imvudiscoverfeed #imvuavi #welovecreativity',
       request: 'Hi @{creator_imvu_avatar}! I\'d love to showcase {item_name} in my next stream. Product ID: {product_id}',
       end_stream: 'Thank you for watching! Don\'t forget to check out {item_name} by @{creator_imvu_avatar} - {product_id}'
     }

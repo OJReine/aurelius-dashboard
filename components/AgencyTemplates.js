@@ -20,13 +20,19 @@ const TEMPLATE_TYPES = [
 ]
 
 const AVAILABLE_VARIABLES = [
-  { name: 'item_name', description: 'Name of the item' },
+  { name: 'item_name', description: 'Name of the item (single item)' },
+  { name: 'item_names', description: 'Names of all items (comma-separated)' },
   { name: 'creator_name', description: 'Creator display name' },
   { name: 'creator_imvu_avatar', description: 'Creator IMVU avatar name (for @mentions)' },
   { name: 'creator_ig_handle', description: 'Creator Instagram handle' },
   { name: 'creator_ig_shop_handle', description: 'Creator Instagram shop handle' },
-  { name: 'product_id', description: 'IMVU product ID' },
+  { name: 'creator_shop_id', description: 'Creator shop/manufacturer ID' },
+  { name: 'product_id', description: 'IMVU product ID (single item)' },
+  { name: 'product_ids', description: 'IMVU product IDs (comma-separated)' },
   { name: 'agency_name', description: 'Agency name' },
+  { name: 'agency_ig_handle', description: 'Agency Instagram handle' },
+  { name: 'agency_hashtag', description: 'Agency hashtag (formatted)' },
+  { name: 'model_ig_handle', description: 'Model Instagram handle' },
   { name: 'stream_type', description: 'Type of stream (showcase, sponsored, etc.)' },
   { name: 'due_date', description: 'Due date for the stream' }
 ]
