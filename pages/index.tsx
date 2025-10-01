@@ -585,7 +585,9 @@ const Home: NextPage = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
-                            <h3 className="text-sm font-medium text-gray-900">{stream.item_name}</h3>
+                            <h3 className="text-sm font-medium text-gray-900">
+                              {stream.items?.length > 0 ? stream.items[0].item_name : 'Untitled Stream'}
+                            </h3>
                             <span className={`badge badge-${stream.priority === 'high' ? 'error' : stream.priority === 'medium' ? 'warning' : 'success'}`}>
                               {stream.priority}
                             </span>
@@ -594,7 +596,7 @@ const Home: NextPage = () => {
                             </span>
                           </div>
                           <p className="text-xs text-soft mb-1">
-                            Creator: {stream.creator_name} • Agency: {stream.agency_name || 'N/A'}
+                            Creator: {stream.items?.length > 0 ? stream.items[0].creator_name : 'N/A'} • Agency: {stream.agency_name || 'N/A'}
                           </p>
                           <p className="text-xs text-soft">
                             Due: {formatDate(stream.due_date)} ({getDaysUntilDue(stream.due_date)} days)
@@ -681,10 +683,10 @@ const Home: NextPage = () => {
                         className="hover:bg-soft-50/50 transition-colors duration-200"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {stream.item_name}
+                          {stream.items?.length > 0 ? stream.items[0].item_name : 'Untitled Stream'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-soft">
-                          {stream.creator_name}
+                          {stream.items?.length > 0 ? stream.items[0].creator_name : 'N/A'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-soft">
                           {stream.agency_name || 'N/A'}
@@ -780,8 +782,8 @@ const Home: NextPage = () => {
                       })
                       .map(stream => (
                         <div key={stream.id} className="p-2 bg-soft-50 rounded-lg">
-                          <p className="text-xs font-medium text-gray-900 truncate">{stream.item_name}</p>
-                          <p className="text-xs text-soft">{stream.creator_name}</p>
+                          <p className="text-xs font-medium text-gray-900 truncate">{stream.items?.length > 0 ? stream.items[0].item_name : 'Untitled Stream'}</p>
+                          <p className="text-xs text-soft">{stream.items?.length > 0 ? stream.items[0].creator_name : 'N/A'}</p>
                         </div>
                       ))}
                   </div>
@@ -821,14 +823,14 @@ const Home: NextPage = () => {
                     className="card p-6"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">{stream.item_name}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{stream.items?.length > 0 ? stream.items[0].item_name : 'Untitled Stream'}</h3>
                       <div className="flex space-x-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <StarIcon key={star} className="w-4 h-4 text-accent-400 fill-current" />
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-soft mb-2">by {stream.creator_name}</p>
+                    <p className="text-sm text-soft mb-2">by {stream.items?.length > 0 ? stream.items[0].creator_name : 'Unknown Creator'}</p>
                     <p className="text-sm text-gray-700 mb-4">
                       "This item exceeded my expectations! The quality is outstanding and the design is perfect for my style."
                     </p>
